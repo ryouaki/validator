@@ -43,28 +43,46 @@ function doValidate(schema, target) {
   for (let i = 0; i < fieldNum; i++) {
     const field = fields[i]
     const rules = schema[field]
-    const data = target[field]
+    const value = target[field]
     if (field === undefined) {
       continue
     }
 
-    if (isArray(data)) {
+    const ruleNum = rules.length
+    let hasError = false
+    for (let j = 0; j < ruleNum && !hasError; j++) {
+      const rule = rules[j]
+      const {
+        type = 'String',
+        message = undefined,
+        messageFormat = undefined,
+        execFunc = undefined,
+        fields = [],
+        ...tags
+      } = rule
 
-    } else if (isObject(data)) {
+      const tagNames = Object.keys(tags)
+      if (tagNames.length > 1) {
+        console.error(`[Error:Plugin] ${field} had more than one tag in one rule!`)
+      }
 
-    } else {
-      rules.forEach((rule) => {
-        const {
-          type = 'String',
-          message = undefined,
-          messageFormat = undefined,
-          execFunc = undefined,
-          fields = [],
-          ...tags
-        } = rule
-
-        console.log(tags)
-      })
+      const tagName = tagNames[0]
+      const plugin = plugins[tagName] || {}
+      const ef = execFunc || plugin.execFunc || defaultExecFunc
+      const tag = {
+        tagName,
+        tagValue: tags[tagName]
+      }
+      if (ef(field, value, tag) === false) {
+        hasError = true
+        const msg = messageFormat && messageFormat(field, value, tag) || message || defaultMessageFunc(field, value, tag)
+        errors.push({
+          field,
+          value,
+          message: msg,
+          ...tag
+        })
+      }
     }
 
   }
@@ -123,8 +141,8 @@ Validator.addPlugin = function (plugin, replace = false) {
     tagName.length > 0 &&
     isFunction(execFunc) &&
     (replace === true || plugins[tagName] === undefined)) {
-    plugins[tag] != undefined && console.warn(`[Warn:Plugin] ${tag} is existed and will be replaced!`)
-    plugins[tag] = {
+    plugins[tagName] != undefined && console.warn(`[Warn:Plugin] ${tagName} is existed and will be replaced!`)
+    plugins[tagName] = {
       message,
       messageFormat,
       execFunc
@@ -136,9 +154,9 @@ Validator.addPlugin = function (plugin, replace = false) {
 }
 
 Validator.addPlugin({
-  tag: "required",
-  ruleFunc: function (field, value, opts) {
-    if (opts.value === true && (value === undefined || value === null)) {
+  tagName: "required",
+  execFunc: function (field, value, opts) {
+    if (opts.tagValue === true && (value === undefined || value === null)) {
       return false
     }
     return true

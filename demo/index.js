@@ -1,4 +1,12 @@
+const fs = require('fs')
 const Validator = require("./../index")
+
+Validator.addPlugin({
+  tagName: "minSize",
+  execFunc: function (field, value, opts) {
+    return false
+  }
+})
 
 const v = new Validator({
   field1: [{
@@ -36,6 +44,10 @@ const v = new Validator({
   ]
 })
 
-v.validate({
-  field1: "test"
-})
+console.log(JSON.stringify(v.validate({
+  field1: "test",
+  field2: "test",
+  field4: "test"
+})))
+
+fs.readSync(process.stdin.fd, 1000, 0, 'utf8')
