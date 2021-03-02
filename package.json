@@ -1,0 +1,24 @@
+{
+  "name": "@ryou/validator",
+  "version": "1.0.0",
+  "description": "A validate JS framework both for node.js and browser.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryouaki/validator.git"
+  },
+  "keywords": [
+    "validator",
+    "validate",
+    "validation"
+  ],
+  "author": "ryouaki (46517115@qq.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ryouaki/validator/issues"
+  },
+  "homepage": "https://github.com/ryouaki/validator#readme"
+}
