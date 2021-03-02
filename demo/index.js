@@ -3,6 +3,7 @@ const Validator = require("./../index")
 
 Validator.addPlugin({
   tagName: "minSize",
+  message: "field4 with minSize 1",
   execFunc: function (field, value, opts) {
     return false
   }
@@ -33,8 +34,7 @@ const v = new Validator({
       message: "field4 is required",
     },
     {
-      minSize: 1,
-      message: "field4 with minSize 1",
+      minSize: 1
     }
   ],
   field5: [
@@ -46,8 +46,7 @@ const v = new Validator({
 
 console.log(JSON.stringify(v.validate({
   field1: "test",
-  field2: "test",
-  field4: "test"
+  field2: "test"
 })))
 
 fs.readSync(process.stdin.fd, 1000, 0, 'utf8')

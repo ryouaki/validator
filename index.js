@@ -38,7 +38,7 @@ const plugins = {}
 function doValidate(schema, target) {
   const fields = Object.keys(schema)
   const fieldNum = fields.length
-  const errors = []
+  const errors = {}
 
   for (let i = 0; i < fieldNum; i++) {
     const field = fields[i]
@@ -49,8 +49,7 @@ function doValidate(schema, target) {
     }
 
     const ruleNum = rules.length
-    let hasError = false
-    for (let j = 0; j < ruleNum && !hasError; j++) {
+    for (let j = 0; j < ruleNum; j++) {
       const rule = rules[j]
       const {
         type = 'String',
@@ -74,20 +73,28 @@ function doValidate(schema, target) {
         tagValue: tags[tagName]
       }
       if (ef(field, value, tag) === false) {
-        hasError = true
         const msg = messageFormat && messageFormat(field, value, tag) || message || defaultMessageFunc(field, value, tag)
-        errors.push({
+        errors[field] === undefined ? 
+        errors[field] = {
           field,
           value,
+          error: [{
+            message: msg,
+            ...tag
+          }]
+        } : errors[field].error.push({
           message: msg,
           ...tag
         })
       }
     }
-
   }
 
-  return errors
+  const keys = Object.keys(errors)
+
+  return keys.map((key) => {
+    return errors[key]
+  })
 }
 
 /**
