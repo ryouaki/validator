@@ -1,6 +1,7 @@
 const fs = require('fs')
 const Validator = require("./../index")
 
+Validator.addPlugin(Validator.DefaultPlugins.required)
 Validator.addPlugin({
   tagName: "minSize",
   message: "field4 with minSize 1",
@@ -12,6 +13,10 @@ Validator.addPlugin({
 const v = new Validator({
   field1: [{
     required: true,
+    message: "field1 is required"
+  },
+  {
+    Required: true,
     message: "field1 is required"
   }],
   field2: [{
@@ -39,14 +44,32 @@ const v = new Validator({
   ],
   field5: [
     {
-
+      type: "Object",
+      fields: {
+        field1: [{required: true}, {minSize: 1}]
+      }
+    },
+    {
+      required: true,
+      message: "field5 is required",
+    }
+  ],
+  field6: [
+    {
+      type: "Array",
+      fields: {
+        field1: [{required: true}, {minSize: 1}]
+      }
     }
   ]
 })
 
 console.log(JSON.stringify(v.validate({
   field1: "test",
-  field2: "test"
+  field2: "test",
+  field5: {
+    field1: ""
+  }
 })))
 
 fs.readSync(process.stdin.fd, 1000, 0, 'utf8')

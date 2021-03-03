@@ -35,7 +35,7 @@ function isFunction(f) {
 
 const plugins = {}
 
-function doValidate(schema, target) {
+function doValidate(schema = {}, target = {}) {
   const fields = Object.keys(schema)
   const fieldNum = fields.length
   const errors = {}
@@ -51,6 +51,8 @@ function doValidate(schema, target) {
     const ruleNum = rules.length
     for (let j = 0; j < ruleNum; j++) {
       const rule = rules[j]
+      let err = null
+      
       const {
         type = 'String',
         message = undefined,
@@ -60,32 +62,42 @@ function doValidate(schema, target) {
         ...tags
       } = rule
 
-      const tagNames = Object.keys(tags)
-      if (tagNames.length > 1) {
-        console.error(`[Error:Plugin] ${field} had more than one tag in one rule!`)
-      }
+      if (type === "Object") {
+        err = doValidate(rule.fields, value)
+      } else if (type === "Array") {
 
-      const tagName = tagNames[0]
-      const plugin = plugins[tagName] || {}
-      const ef = execFunc || plugin.execFunc || defaultExecFunc
-      const tag = {
-        tagName,
-        tagValue: tags[tagName]
-      }
-      if (ef(field, value, tag) === false) {
-        const msg = messageFormat && messageFormat(field, value, tag) || message || defaultMessageFunc(field, value, tag)
-        errors[field] === undefined ? 
-        errors[field] = {
-          field,
-          value,
-          error: [{
+      } else {
+        const tagNames = Object.keys(tags)
+        if (tagNames.length > 1) {
+          console.error(`[Error:Plugin] ${field} had more than one tag in one rule!`)
+        }
+
+        const tagName = tagNames[0]
+        let plugin = plugins[tagName]
+        if (!plugin) {
+          console.warn(`[Warn:Plugin] ${tagName} on ${field} is not existed!`)
+          plugin = {}
+        }
+        const ef = execFunc || plugin.execFunc || defaultExecFunc
+        const tag = {
+          tagName,
+          tagValue: tags[tagName]
+        }
+        if (ef(field, value, tag) === false) {
+          const msg = messageFormat && messageFormat(field, value, tag) || message || defaultMessageFunc(field, value, tag)
+          err = {
             message: msg,
             ...tag
-          }]
-        } : errors[field].error.push({
-          message: msg,
-          ...tag
-        })
+          }
+        }
+      }
+
+      if ((err != null && isArray(err) === false ) || (isArray(err) === true && err.length > 0)) {
+        errors[field] === undefined ? 
+          errors[field] = {
+            field,
+            error: [err]
+          } : errors[field].error.push(err)
       }
     }
   }
@@ -115,7 +127,7 @@ class Validator {
    */
   validate(target = {}) {
     if (!isObject(target)) {
-      throw new Error("Parameter error! The first parmeter must be a object!")
+      throw new Error("[Error:Validator] Parameter error! The first parmeter must be a object!")
     }
 
     return doValidate(this.schema, target)
@@ -160,7 +172,9 @@ Validator.addPlugin = function (plugin, replace = false) {
   return false  
 }
 
-Validator.addPlugin({
+Validator.DefaultPlugins = {}
+
+Validator.DefaultPlugins.required = {
   tagName: "required",
   execFunc: function (field, value, opts) {
     if (opts.tagValue === true && (value === undefined || value === null)) {
@@ -168,6 +182,6 @@ Validator.addPlugin({
     }
     return true
   }
-})
+}
 
 module.exports = Validator

@@ -1,0 +1,44 @@
+[
+  {
+    "field": "field3",
+    "error": [
+      {
+        "message": "field3 is required",
+        "tagName": "required",
+        "tagValue": true
+      }
+    ]
+  },
+  {
+    "field": "field4",
+    "error": [
+      {
+        "message": "field4 is required",
+        "tagName": "required",
+        "tagValue": true
+      },
+      {
+        "message": "Default message for [field4] about value with undefined from [minSize]",
+        "tagName": "minSize",
+        "tagValue": 1
+      }
+    ]
+  },
+  {
+    "field": "field5",
+    "error": [
+      [
+        {
+          "field": "field1",
+          "error": [
+            {
+              "message": "Default message for [field1] about value with  from [minSize]",
+              "tagName": "minSize",
+              "tagValue": 1
+            }
+          ]
+        }
+      ]
+    ]
+  }
+]
