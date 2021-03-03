@@ -3,9 +3,8 @@
 # 写一个校验库。但是却不能有校验功能 ---- What？
 
 写一个没有校验功能的校验库，听起来就是下图一样的感受。
-![avatar](/doc/images/1.jpeg)
 <div align="center">
-  <img src="/doc/images/1.jpeg" alt="hoppscotch.io logo" height="128">
+  <img src="https://github.com/ryouaki/validator/blob/main/doc/images/1.jpeg" alt="hoppscotch.io logo" height="128">
 </div>
 是的，但是挑战就在那里。事情往往就是这个样子，问题总是要被解决的，要么逃避，要么死磕。而在编程领域，往往有很多模式帮助我们去死磕到底。就像前几年网络流行的一个梗：五彩斑斓的黑。最后还是被广大网友找到了答案。
 
@@ -24,7 +23,9 @@ JS校验库，我们往往会想到validator.js，已经是一个非常优秀的
 
 ### 微内核架构
 何为微内核架构呢？简单来说就是插件化架构。将不同的功能以插件的形式，集成到系统中。将不同的功能以插件的形式进行拆分，然后通过安装各种功能的插件到系统中来扩展系统的功能以实现水平扩展的能力。
-![avatar](/doc/images/2.png)
+<div align="center">
+  <img src="https://github.com/ryouaki/validator/blob/main/doc/images/2.jpeg" alt="hoppscotch.io logo" height="128">
+</div>
 
 ### 解析器模式
 这是对解析器模式的解释：给定一个语言, 定义它的文法的一种表示，并定义一个解释器, 该解释器使用该表示来解释语言中的句子。
