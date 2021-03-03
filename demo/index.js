@@ -30,6 +30,7 @@ const v = new Validator({
     required: true,
     message: "field3 is required",
     execFunc: function (field, value, opts) {
+      console.log(...arguments)
       return false
     }
   }],
