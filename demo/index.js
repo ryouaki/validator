@@ -59,8 +59,13 @@ const v = new Validator({
     {
       type: "Array",
       fields: {
-        field1: [{required: true}, {minSize: 1}]
+        field1: [{required: true}, {minSize: 1}],
+        field2: [{required: true}, {minSize: 1}]
       }
+    },
+    {
+      required: true,
+      message: "field6 is required",
     }
   ]
 })
@@ -69,8 +74,8 @@ console.log(JSON.stringify(v.validate({
   field1: "test",
   field2: "test",
   field5: {
-    field1: ""
-  }
+  },
+  field6: [{field1: ""}]
 })))
 
 fs.readSync(process.stdin.fd, 1000, 0, 'utf8')

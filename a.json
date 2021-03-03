@@ -32,12 +32,51 @@
           "field": "field1",
           "error": [
             {
-              "message": "Default message for [field1] about value with  from [minSize]",
+              "message": "Default message for [field1] about value with undefined from [required]",
+              "tagName": "required",
+              "tagValue": true
+            },
+            {
+              "message": "Default message for [field1] about value with undefined from [minSize]",
               "tagName": "minSize",
               "tagValue": 1
             }
           ]
         }
+      ]
+    ]
+  },
+  {
+    "field": "field6",
+    "error": [
+      [
+        [
+          {
+            "field": "field1",
+            "error": [
+              {
+                "message": "Default message for [field1] about value with  from [minSize]",
+                "tagName": "minSize",
+                "tagValue": 1
+              }
+            ]
+          },
+          {
+            "field": "field2",
+            "error": [
+              {
+                "message": "Default message for [field2] about value with undefined from [required]",
+                "tagName": "required",
+                "tagValue": true
+              },
+              {
+                "message": "Default message for [field2] about value with undefined from [minSize]",
+                "tagName": "minSize",
+                "tagValue": 1
+              }
+            ]
+          }
+        ]
       ]
     ]
   }

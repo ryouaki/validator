@@ -52,7 +52,7 @@ function doValidate(schema = {}, target = {}) {
     for (let j = 0; j < ruleNum; j++) {
       const rule = rules[j]
       let err = null
-      
+
       const {
         type = 'String',
         message = undefined,
@@ -65,7 +65,9 @@ function doValidate(schema = {}, target = {}) {
       if (type === "Object") {
         err = doValidate(rule.fields, value)
       } else if (type === "Array") {
-
+        err = isArray(value) ? value.map((item) => {
+          return doValidate(rule.fields, item)
+        }) : []
       } else {
         const tagNames = Object.keys(tags)
         if (tagNames.length > 1) {
