@@ -63,7 +63,7 @@ function doValidate(schema = {}, target = {}) {
       } = rule
 
       if (type === "Object") {
-        err = doValidate(rule.fields, value)
+        err = isObject(value) ? doValidate(rule.fields, value) : []
       } else if (type === "Array") {
         err = isArray(value) ? value.map((item) => {
           return doValidate(rule.fields, item)
