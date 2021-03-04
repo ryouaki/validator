@@ -1,5 +1,5 @@
 {
-  "name": "@ryou/validator",
+  "name": "ryou-validator",
   "version": "1.0.0",
   "description": "A validate JS framework both for node.js and browser.",
   "main": "index.js",
