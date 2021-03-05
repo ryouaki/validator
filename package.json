@@ -1,6 +1,6 @@
 {
   "name": "ryou-validator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A validate JS framework both for node.js and browser.",
   "main": "index.js",
   "scripts": {
@@ -14,6 +14,12 @@
     "validator",
     "validate",
     "validation"
+  ],
+  "files": [
+    "index.js",
+    "package.json",
+    "LICENSE",
+    "README.md"
   ],
   "author": "ryouaki (46517115@qq.com)",
   "license": "MIT",
