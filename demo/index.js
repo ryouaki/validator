@@ -18,12 +18,20 @@ Validator.addPlugin({
 })
 
 const v = new Validator({
-  field: [{ max: 1},{
+  field: [{ max: 1 }, {
     required: true,
     message() {
       return "Test"
     }
-  }]
+  }],
+  field1: [
+    {
+      type: 'Object',
+      fields: {
+        field: [{ required: true }]
+      }
+    }
+  ]
 })
 
 console.log(JSON.stringify(v.validate({

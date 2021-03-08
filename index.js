@@ -63,7 +63,7 @@ function doValidate(schema = {}, target = {}) {
       } = rule
 
       if (type === "Object") {
-        err = isObject(value) ? doValidate(rule.fields, value) : []
+        err = doValidate(rule.fields, value)
       } else if (type === "Array") {
         err = isArray(value) ? value.map((item) => {
           return doValidate(rule.fields, item)
@@ -97,11 +97,10 @@ function doValidate(schema = {}, target = {}) {
 
       if ((err != null && isArray(err) === false ) || (isArray(err) === true && err.length > 0)) {
         hasError = true
-        errors[field] === undefined ? 
-          errors[field] = {
-            field,
-            error: [err]
-          } : errors[field].error.push(err)
+        errors[field] = {
+          field,
+          error: err
+        }
       }
     }
   }
