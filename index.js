@@ -56,8 +56,7 @@ function doValidate(schema = {}, target = {}) {
       const {
         type = 'String',
         message = undefined,
-        messageFormat = undefined,
-        execFunc = undefined,
+        validate = undefined,
         fields = [],
         ...tags
       } = rule
@@ -71,22 +70,23 @@ function doValidate(schema = {}, target = {}) {
       } else {
         const tagNames = Object.keys(tags)
         if (tagNames.length > 1) {
-          console.error(`[Error:Plugin] ${field} had more than one tag in one rule!`)
+          console.error(`[Validator:Error] ${field} had more than one tag in one rule [${tagNames.join(',')}]!`)
+          continue
         }
 
         const tagName = tagNames[0]
         let plugin = plugins[tagName]
         if (!plugin) {
-          console.warn(`[Warn:Plugin] ${tagName} on ${field} is not existed!`)
+          console.warn(`[Validator:Warn] ${tagName} on ${field} is not existed!`)
           plugin = {}
         }
-        const ef = execFunc || plugin.execFunc || defaultExecFunc
+        const ef = validate || plugin.validate || defaultValidate
         const tag = {
           tagName,
           tagValue: tags[tagName]
         }
         if (ef(field, value, tag) === false) {
-          const msg = messageFormat && messageFormat(field, value, tag) || message || defaultMessageFunc(field, value, tag)
+          const msg = message && isFunction(message) && message(field, value, tag) || message || defaultMessage(field, value, tag)
           err = {
             message: msg,
             ...tag
@@ -115,32 +115,24 @@ function doValidate(schema = {}, target = {}) {
  * 
  */
 class Validator {
-  /**
-   * @name constructor
-   * @param {Object} schema The schema for rules. default {}
-   */
   constructor(schema = {}) {
     this.schema = schema
   }
 
-  /**
-   * @name validate
-   * @param {Object} target The Object we want to validate
-   */
   validate(target = {}) {
     if (!isObject(target)) {
-      throw new Error("[Error:Validator] Parameter error! The first parmeter must be a object!")
+      throw new Error("[Error:Validator.validate] Parameter error! The first parmeter must be a object!")
     }
 
     return doValidate(this.schema, target)
   }
 }
 
-function defaultMessageFunc(field, value, opts) {
-  return `Default message for [${field}] about value with ${value} from [${opts.tagName}]`
+function defaultMessage(field, value, opts) {
+  return `[${opts.tagName}] failed:[${field}] = ${value}`
 }
 
-function defaultExecFunc(field, value, opts) {
+function defaultValidate(field, value, opts) {
   return true
 }
 
@@ -152,38 +144,24 @@ function defaultExecFunc(field, value, opts) {
 Validator.addPlugin = function (plugin, replace = false) {
   const {
     tagName = "",
-    message = `Default message from plugin [${plugin.tagName}]`,
-    messageFormat = defaultMessageFunc,
-    execFunc = defaultExecFunc
+    message = defaultMessage,
+    validate = defaultValidate
   } = plugin
 
   if (
     isString(tagName) &&
     tagName.length > 0 &&
-    isFunction(execFunc) &&
+    isFunction(validate) &&
     (replace === true || plugins[tagName] === undefined)) {
     plugins[tagName] != undefined && console.warn(`[Warn:Plugin] ${tagName} is existed and will be replaced!`)
     plugins[tagName] = {
       message,
-      messageFormat,
-      execFunc
+      validate
     }
     return true
   }
 
   return false  
-}
-
-Validator.DefaultPlugins = {}
-
-Validator.DefaultPlugins.required = {
-  tagName: "required",
-  execFunc: function (field, value, opts) {
-    if (opts.tagValue === true && (value === undefined || value === null)) {
-      return false
-    }
-    return true
-  }
 }
 
 module.exports = Validator
