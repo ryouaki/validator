@@ -49,7 +49,8 @@ function doValidate(schema = {}, target = {}) {
     }
 
     const ruleNum = rules.length
-    for (let j = 0; j < ruleNum; j++) {
+    let hasError = false
+    for (let j = 0; j < ruleNum && !hasError; j++) {
       const rule = rules[j]
       let err = null
 
@@ -95,6 +96,7 @@ function doValidate(schema = {}, target = {}) {
       }
 
       if ((err != null && isArray(err) === false ) || (isArray(err) === true && err.length > 0)) {
+        hasError = true
         errors[field] === undefined ? 
           errors[field] = {
             field,

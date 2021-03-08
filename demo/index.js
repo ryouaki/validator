@@ -2,9 +2,6 @@ const Validator = require("./../index")
 
 Validator.addPlugin({
   tagName: "required",
-  message() {
-    return "Test"
-  },
   validate(field, value, opts) {
     if (opts.tagValue === true && (value == undefined || value == null || value == "")) {
       return false
@@ -13,8 +10,15 @@ Validator.addPlugin({
   }
 })
 
+Validator.addPlugin({
+  tagName: "max",
+  validate(field, value, opts) {
+    return false
+  }
+})
+
 const v = new Validator({
-  field: [{
+  field: [{ max: 1},{
     required: true,
     message() {
       return "Test"
